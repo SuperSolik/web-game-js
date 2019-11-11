@@ -1,4 +1,4 @@
-let eventsManager = {
+export const eventsManager = {
         action: {
             left: false,
             right: false,

@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => {
+    const {GameManager} = require("./gameManager");
+
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("2d");
     ctx.transform(1, 0, 0, -1, 0, canvas.height);

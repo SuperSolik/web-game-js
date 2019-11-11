@@ -4,7 +4,11 @@
 
 .center-element{
     position: absolute;
-    left: 50%;
-    top: 50%;
+    left: 40%;
+    top: 40%;
     transform: translate(-50%, -50%);
+}
+
+.scale {
+    transform: scale(3.0);
 }

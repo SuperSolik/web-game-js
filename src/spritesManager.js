@@ -9,14 +9,15 @@ export class SpritesManager {
     }
 
     draw(obj){
-        this.ctx.fillStyle = "green";
-        this.ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+        if (obj instanceof Array) {
+            obj.forEach(o => this.draw(o));
+        } else {
+            this.ctx.fillStyle = obj.fill || "gray";
+            this.ctx.fillRect(obj.pos.x, obj.pos.y, obj.width, obj.height);
+        }
     }
 
     drawLevel(level) {
-        level.platforms.forEach(platform => {
-            this.ctx.fillStyle = "gray";
-            this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
-        });
+        level.platforms.forEach((p) => this.draw(p));
     }
 }

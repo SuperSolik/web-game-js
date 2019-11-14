@@ -1,50 +1,51 @@
+import {Vec} from "./entities";
+
 export class PhysicsManager {
     constructor(mapManager){
         this.mapManager = mapManager;
-        this.dxMax = 15;
-        this.dxForce = 0.5;
     }
 
-    updatePlayerPhysics(player) {
-        if (player.dx > this.dxMax) player.dx = this.dxMax;
-        if (player.dx < -this.dxMax) player.dx = -this.dxMax;
-
-        if (player.dx > 0) player.dx -= this.dxForce;
-        if (player.dx < 0) player.dx += this.dxForce;
-
-        player.y += player.dy;
-        player.x += player.dx;
-
-        if (player.x + player.width <= 0) player.x = this.mapManager.width;
-        if (player.x > this.mapManager.width) player.x = -player.width / 2;
-
-        const hit = this.collide(player);
-        if (hit) {
-            if (hit === "top") {
-                player.dy = 0;
-            } else {
-                player.dx = -player.dx * 2;
-                player.dy = -player.dy * 2;
-            }
+    updateBullets(bullet) {
+        if (bullet instanceof Array) {
+            bullet.forEach(b => this.updateBullets(b));
         } else {
-            player.dy = -5;
+            bullet.pos = bullet.pos.plus(bullet.vel);
+            this.mapCollide(bullet);
         }
     }
 
-    collide(player) {
-        for (let p of this.mapManager.curLevel.platforms) {
-            const isCollision = this.checkCollision(player, p);
-            if (isCollision) {
-                return player.y > p.y ? "top" : "usual";
-            }
+    updateUnit(obj) {
+        this.mapCollide(obj);
+    }
+
+    // check(actorsArray, bullets){
+    //     actorsArray.forEach(e => {
+    //
+    //     })
+    // }
+
+    mapCollide(obj) {
+        if (obj.pos.y + obj.height > this.mapManager.height) {
+            obj.pos = new Vec(obj.pos.x, this.mapManager.height - obj.height);
         }
-        return false;
+
+        if (obj.pos.y < 0) {
+            obj.pos = new Vec(obj.pos.x, 0);
+        }
+
+        if (obj.pos.x < 0) {
+            obj.pos = new Vec(0, obj.pos.y);
+        }
+
+        if (obj.pos.x + obj.width > this.mapManager.width) {
+            obj.pos = new Vec(this.mapManager.width - obj.width, obj.pos.y);
+        }
     }
 
     checkCollision(obj1, obj2) {
-        return obj1.x <= obj2.x + obj2.width &&
-            obj1.x + obj1.width >= obj2.x &&
-            obj1.y <= obj2.y + obj2.height &&
-            obj1.y + obj1.height >= obj2.y;
+        return obj1.pos.x <= obj2.pos.x + obj2.width &&
+            obj1.pos.x + obj1.width >= obj2.pos.x &&
+            obj1.pos.y <= obj2.pos.y + obj2.height &&
+            obj1.pos.y + obj1.height >= obj2.pos.y;
     }
 }

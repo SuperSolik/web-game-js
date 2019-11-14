@@ -5,7 +5,7 @@ const glob = require("glob");
 
 module.exports = {
     watch: true,
-    entry: glob.sync("./src/*.js"),
+    entry: ["./game.js", ...glob.sync("./src/*.js")],
     output: {
         path: path.resolve(__dirname, "dist"), //Output Directory
         filename: "game.min.js", //Output file

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', (event) => {
-    const {GameManager} = require("./gameManager");
+    const {GameManager} = require("./src/gameManager");
 
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("2d");

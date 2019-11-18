@@ -1,11 +1,15 @@
-import {Vec} from "./entities";
+import {Player, Vec} from "./entities";
 
 export class PhysicsManager {
-    constructor(mapManager){
-        this.mapManager = mapManager;
+    constructor(map) {
+        this.map = map;
     }
 
-    update(player, enemies, bullets) {
+    update(player, enemies, bullets, actors = []) {
+        // const p_ = actors.find(o => o instanceof Player);
+        // const e_ = actors.filter(o => o instanceof Enemy);
+        // const b_ = actors.filter(o => o instanceof Bullet);
+
         bullets.forEach(b => {
             if (this.collide(b, player)) {
                 b.hit(player);
@@ -17,46 +21,38 @@ export class PhysicsManager {
                     break
                 }
             }
-            b.pos = b.pos.plus(b.vel);
-            this.mapCollide(b, true);
+            this.move(b, true);
         });
 
-        this.mapCollide(player);
+        this.move(player);
 
         enemies.forEach(e => {
             const xDiff = player.pos.x - e.pos.x;
             const yDiff = player.pos.y - e.pos.y;
             const distance = Math.sqrt(xDiff ** 2 + yDiff ** 2);
             const angle = Math.atan2(yDiff, xDiff);
-            e.vel = new Vec(2 * Math.cos(angle), 2 * Math.sin(angle));
+            const vel = new Vec(4 * Math.cos(angle), 4 * Math.sin(angle));
             if (distance >= 300) {
-                e.pos = e.pos.plus(e.vel);
+                e.vel = vel;
+            } else if (distance < 250) {
+                e.vel = vel.multiply(-1);
+            } else {
+                e.vel = new Vec(0, 0);
             }
-            if (distance < 250) {
-                e.pos = e.pos.plus(e.vel.multiply(-1));
-            }
-            this.mapCollide(e);
+            this.move(e);
         })
     }
 
-    mapCollide(obj, kill = false) {
-        if (obj.pos.y + obj.height > this.mapManager.height) {
-            obj.pos = new Vec(obj.pos.x, this.mapManager.height - obj.height);
-            obj.destroy = kill;
-        }
+    move(obj, kill = false) {
+        obj.savePos();
+        obj.update();
 
-        if (obj.pos.y < 0) {
-            obj.pos = new Vec(obj.pos.x, 0);
-            obj.destroy = kill;
-        }
-
-        if (obj.pos.x < 0) {
-            obj.pos = new Vec(0, obj.pos.y);
-            obj.destroy = kill;
-        }
-
-        if (obj.pos.x + obj.width > this.mapManager.width) {
-            obj.pos = new Vec(this.mapManager.width - obj.width, obj.pos.y);
+        const scale = obj instanceof Player ? 1.5 : 3;
+        if (this.map.isWall(obj.pos.x, obj.pos.y + obj.height / scale)
+            || this.map.isWall(obj.pos.x + obj.width, obj.pos.y + obj.height / scale)
+            || this.map.isWall(obj.pos.x, obj.pos.y + obj.height)
+            || this.map.isWall(obj.pos.x + obj.width, obj.pos.y + obj.height)) {
+            obj.restorePos();
             obj.destroy = kill;
         }
     }

@@ -9,15 +9,15 @@ export class GameManager {
     constructor(opts) {
         this.player = new Player(
             new Vec(opts.canvas.width / 2, opts.canvas.height / 2),
-            new Vec(5, 5),
-            25,
-            25);
+            new Vec(0, 0),
+            32,
+            64,
+            "knight_f_run_anim");
 
         this.player.fill = "green";
 
         this.enemies = [];
         this.bullets = [];
-        this.killLater = [];
 
         this.controls = eventsManager;
         this.render = new SpritesManager(opts.ctx);
@@ -28,23 +28,27 @@ export class GameManager {
     }
 
     update(){
+        //TODO: combine all entities to actors
         this.render.clear();
         if (this.controls.action.left) {
             this.player.moveLeft();
-        }
-        if (this.controls.action.right) {
+        } else if (this.controls.action.right) {
             this.player.moveRight();
+        } else {
+            this.player.stopX();
         }
+
         if (this.controls.action.up) {
             this.player.moveUp();
-        }
-        if (this.controls.action.down) {
+        } else if (this.controls.action.down) {
             this.player.moveDown();
+        } else {
+            this.player.stopY();
         }
+
         if (this.controls.action.shoot) {
             this.player.shoot(this.bullets, eventsManager.mouseCoords);
             this.controls.action.shoot = false;
-            console.log(this.bullets.map(b => b.destroy));
         }
 
         this.enemies.forEach(e => {
@@ -52,7 +56,7 @@ export class GameManager {
                 e.shoot(this.bullets, this.player.pos);
                 setTimeout(() => {
                     e.shooting = true;
-                }, 1000);
+                }, Math.random() * 2500);
             }
         });
 
@@ -75,9 +79,12 @@ export class GameManager {
                 this.bullets.splice(index, 1);
             }
         }
+
+        this.render.drawMapBottom(this.map);
         this.render.draw(this.player);
         this.render.draw(this.enemies);
         this.render.draw(this.bullets);
+        this.render.drawMapTop(this.map);
     };
 
     run(){
@@ -85,13 +92,15 @@ export class GameManager {
             const e = new Enemy(
                 new Vec(x, this.map.height / 5),
                 new Vec(0, 0),
-                25,
-                25,
+                32,
+                64,
+                "chort_run_anim"
             );
-            e.fill = "red";
             this.enemies.push(e);
         }
-
-        this.gameLoop = setInterval(() => this.update(), 30);
+        this.map.loadLevel();
+        this.render.init().then(() => {
+            this.gameLoop = setInterval(() => this.update(), 35);
+        })
     }
 }

@@ -11,6 +11,10 @@ export class Vec {
     multiply(factor) {
         return new Vec(this.x * factor, this.y * factor);
     }
+
+    copy() {
+        return new Vec(this.x, this.y);
+    }
 }
 
 export class Unit {
@@ -21,23 +25,54 @@ export class Unit {
         this.height = height;
         this.sprite = sprite;
         this.destroy = false;
+        this.curFrame = 0;
+        this.changeSprite = true;
+        this.oldPos = null;
+    }
+
+    changeSpriteFrame(frameLen) {
+        if (this.changeSprite) {
+            this.curFrame = (this.curFrame + 1) % frameLen;
+            this.changeSprite = false;
+        }
+    }
+
+    savePos() {
+        this.oldPos = this.pos.copy();
+    }
+
+    restorePos() {
+        this.pos = this.oldPos;
+    }
+
+    update() {
+        this.pos = this.pos.plus(this.vel);
     }
 }
 
-class Bullet extends Unit {
-    constructor(pos, vel, width = 10, height = 10, sprite = null) {
-        super(pos, vel, width, height, sprite);
-        this.fromPlayer = false;
+export class Bullet extends Unit {
+    static get SIZE() {
+        return 20;
     }
 
-    static createBullet(startPos, endPos, sprite) {
+    constructor(pos, vel, width, height, sprite = null) {
+        super(pos, vel, width, height, sprite);
+        this.fromPlayer = false;
+        this.angle = 0;
+    }
+
+    static createBullet(startPos, endPos, sprite = 'red', isPlayer = false) {
         const angle = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
-        const speed = 8;
-        return new Bullet(
+        const speed = 10;
+        const b = new Bullet(
             new Vec(startPos.x, startPos.y),
             new Vec(speed * Math.cos(angle), speed * Math.sin(angle)),
-            10, 10,
+            Bullet.SIZE,
+            Bullet.SIZE,
             sprite);
+        b.angle = angle;
+        b.fromPlayer = isPlayer;
+        return b;
     }
 
     hit(obj) {
@@ -55,29 +90,35 @@ class Bullet extends Unit {
 
 export class Player extends Unit {
     moveLeft() {
-        this.pos = this.pos.plus(new Vec(-this.vel.x, 0));
+        this.vel = new Vec(-6, this.vel.y);
     }
 
     moveRight() {
-        this.pos = this.pos.plus(new Vec(this.vel.x, 0));
+        this.vel = new Vec(6, this.vel.y);
     }
 
     moveUp() {
-        this.pos = this.pos.plus(new Vec(0, -this.vel.y));
+        this.vel = new Vec(this.vel.x, -6);
     }
 
     moveDown() {
-        this.pos = this.pos.plus(new Vec(0, this.vel.y));
+        this.vel = new Vec(this.vel.x, 6);
+    }
+
+    stopX() {
+        this.vel = new Vec(0, this.vel.y);
+    }
+
+    stopY() {
+        this.vel = new Vec(this.vel.x, 0);
     }
 
     shoot(bullets, endPos) {
         const b = Bullet.createBullet(
-            this.pos.plus(new Vec(this.width / 2 - 5, this.height / 2 - 5)),
-            endPos.plus(new Vec(this.width / 2 - 5, this.height / 2 - 5).multiply(-1)),
-            this.width,
-            this.height);
-        b.fill = "yellow";
-        b.fromPlayer = true;
+            this.pos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2)),
+            endPos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2).multiply(-1)),
+            'yellow',
+            true);
         bullets.push(b);
     }
 }
@@ -94,12 +135,8 @@ export class Enemy extends Unit {
     shoot(bullets, endPos) {
         if (this.shooting) {
             const b = Bullet.createBullet(
-                this.pos.plus(new Vec(this.width / 2 - 5, this.height / 2 - 5)),
-                endPos.plus(new Vec(this.width / 2 - 5, this.height / 2 - 5).multiply(-1)),
-                this.width,
-                this.height);
-            b.fill = "blue";
-            b.fromPlayer = false;
+                this.pos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2)),
+                endPos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2)),);
             bullets.push(b);
             this.shooting = false;
         }

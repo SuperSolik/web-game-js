@@ -1,8 +1,7 @@
-import {Bullet} from "./entities";
+// import {Bullet} from "./entities";
 
-const path = require("path");
-
-export class SpritesManager {
+// export class SpritesManager {
+class SpritesManager {
     constructor(ctx) {
         this.ctx = ctx;
         this.sprites = null;

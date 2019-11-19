@@ -1,1 +1,1 @@
-# web-game-joust
+# web-game-js

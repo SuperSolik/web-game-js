@@ -1,30 +1,24 @@
-import {Enemy, Player, Vec} from "./entities";
+// import {Enemy, Player, Vec} from "./entities";
+// import {EventsManager} from "./eventsManager";
+//
+// const {eventsManager} = require("./eventsManager");
+// const {SpritesManager} = require("./spritesManager");
+// const {PhysicsManager} = require("./physicsManager");
+// const {MapManager} = require("./mapManager");
 
-const {eventsManager} = require("./eventsManager");
-const {SpritesManager} = require("./spritesManager");
-const {PhysicsManager} = require("./physicsManager");
-const {MapManager} = require("./mapManager");
-
-export class GameManager {
+// export class GameManager {
+class GameManager {
     constructor(opts) {
-        this.player = new Player(
-            new Vec(opts.canvas.width / 2, opts.canvas.height / 2),
-            new Vec(0, 0),
-            32,
-            64,
-            "knight_f_run_anim");
+        this.actors = [];
+        this.player = null;
 
-        this.player.fill = "green";
-
-        this.enemies = [];
-        this.bullets = [];
-
-        this.controls = eventsManager;
+        this.controls = new EventsManager(opts.canvas.getBoundingClientRect());
         this.render = new SpritesManager(opts.ctx);
         this.map = new MapManager();
         this.physics = new PhysicsManager(this.map);
         this.callbacks = opts.callbacks;
         this.gameLoop = null;
+        this.score = 0;
     }
 
     update(){
@@ -47,59 +41,48 @@ export class GameManager {
         }
 
         if (this.controls.action.shoot) {
-            this.player.shoot(this.bullets, eventsManager.mouseCoords);
+            this.player.shoot(this.actors, this.controls.mouseCoords);
             this.controls.action.shoot = false;
         }
 
-        this.enemies.forEach(e => {
+        this.actors.forEach(e => {
             if (e.shooting) {
-                e.shoot(this.bullets, this.player.pos);
+                e.shoot(this.actors, this.player.pos);
                 setTimeout(() => {
                     e.shooting = true;
                 }, Math.random() * 2500);
             }
         });
 
-        this.physics.update(this.player, this.enemies, this.bullets);
+        this.physics.update(this.actors);
+
         if (this.player.destroy) {
             this.player = null;
             console.log("GAME OVER");
             clearInterval(this.gameLoop);
+            this.callbacks.gameOver(this.score);
             return;
         }
 
-        for (let index in this.enemies) {
-            if (this.enemies[index].destroy) {
-                this.enemies.splice(index, 1);
-            }
-        }
-
-        for (let index in this.bullets) {
-            if (this.bullets[index].destroy) {
-                this.bullets.splice(index, 1);
+        for (let index in this.actors) {
+            if (this.actors[index].destroy) {
+                if (this.actors[index] instanceof Enemy) {
+                    this.score += 10;
+                    this.callbacks.updateScore(this.score);
+                }
+                this.actors.splice(index, 1);
             }
         }
 
         this.render.drawMapBottom(this.map);
-        this.render.draw(this.player);
-        this.render.draw(this.enemies);
-        this.render.draw(this.bullets);
+        this.render.draw(this.actors);
         this.render.drawMapTop(this.map);
     };
 
     run(){
-        for (let x = this.map.width / 4; x <= 3 * this.map.width / 4; x += this.map.width / 4) {
-            const e = new Enemy(
-                new Vec(x, this.map.height / 5),
-                new Vec(0, 0),
-                32,
-                64,
-                "chort_run_anim"
-            );
-            this.enemies.push(e);
-        }
-        this.map.loadLevel();
+        this.map.loadLevel(this.actors);
         this.render.init().then(() => {
+            this.player = this.actors[0];
             this.gameLoop = setInterval(() => this.update(), 35);
         })
     }

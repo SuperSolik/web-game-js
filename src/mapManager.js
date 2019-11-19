@@ -1,4 +1,7 @@
-export class MapManager {
+// import {Player, Enemy, Vec} from "./entities";
+
+// export class MapManager {
+class MapManager {
     constructor(){
         this.mapData = null;
         this.xCount = 0;
@@ -10,33 +13,39 @@ export class MapManager {
         this.imgLoaded = false;
         this.jsonLoaded = false;
 
-        this.width = 960;
-        this.height = 768;
+        this.width = null;
+        this.height = null;
 
         this.topLayer = null;
         this.middleLayer = null;
         this.bottomLayer = null;
         this.objects = [];
-
-        //TODO: parse objects
     }
 
-    loadLevel() {
+    loadLevel(objects) {
         fetch(`data/level1.json`)
             .then(res => res.json())
             .then(res => {
                 this.parseMap(res);
-            });
+                return res;
+            })
+            .then(res => {
+                this.parseObjects(res, objects);
+            })
     }
 
-    parseMap(tilesJSON) {
-        this.mapData = tilesJSON;
+    parseMap(mapData) {
+        this.mapData = mapData;
         this.xCount = this.mapData.width;
         this.yCount = this.mapData.height;
         this.tSize.x = this.mapData.tilewidth;
         this.tSize.y = this.mapData.tileheight;
         this.mapSize.x = this.xCount * this.tSize.x;
         this.mapSize.y = this.yCount * this.tSize.y;
+
+        this.width = this.mapSize.x * 2;
+        this.height = this.mapSize.y * 2;
+
         for (let i = 0; i < this.mapData.tilesets.length; i++) {
             let img = new Image();
             img.onload = () => {
@@ -56,7 +65,6 @@ export class MapManager {
         this.topLayer = this.mapData.layers.find(l => l.name === "top");
         this.middleLayer = this.mapData.layers.find(l => l.name === "middle");
         this.bottomLayer = this.mapData.layers.find(l => l.name === "bottom");
-
         this.jsonLoaded = true;
     }
 
@@ -89,5 +97,30 @@ export class MapManager {
                 return this.tilesets[i];
             }
         return null;
+    }
+
+    parseObjects(mapData, objects) {
+        const objectLayer = mapData.layers.find(l => l.type === "objectgroup");
+        for (let object of objectLayer.objects) {
+            if (object.type === "player") {
+                objects.unshift(new Player(
+                    new Vec(object.x * 2, object.y * 2),
+                    new Vec(0, 0),
+                    32, 64,
+                    "knight_f_run_anim"
+                ));
+            }
+
+            if (object.type === "enemy") {
+                let isShotgunProp = object.properties.find(p => p.name === "shotgun");
+                let spriteProp = object.properties.find(p => p.name === "sprite");
+                objects.push(new Enemy(
+                    new Vec(object.x * 2, object.y * 2),
+                    new Vec(0, 0),
+                    32, 64,
+                    spriteProp.value
+                ));
+            }
+        }
     }
 }

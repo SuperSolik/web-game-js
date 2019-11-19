@@ -1,4 +1,5 @@
-export class Vec {
+// export class Vec {
+class Vec {
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -17,7 +18,8 @@ export class Vec {
     }
 }
 
-export class Unit {
+// export class Unit {
+class Unit {
     constructor(pos, vel, width = 0, height = 0, sprite = null) {
         this.pos = pos;
         this.vel = vel;
@@ -50,7 +52,8 @@ export class Unit {
     }
 }
 
-export class Bullet extends Unit {
+// export class Bullet extends Unit {
+class Bullet extends Unit {
     static get SIZE() {
         return 20;
     }
@@ -65,7 +68,7 @@ export class Bullet extends Unit {
         const angle = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
         const speed = 10;
         const b = new Bullet(
-            new Vec(startPos.x, startPos.y),
+            new Vec(startPos.x + 10 * Math.cos(angle), startPos.y + 10 * Math.sin(angle)),
             new Vec(speed * Math.cos(angle), speed * Math.sin(angle)),
             Bullet.SIZE,
             Bullet.SIZE,
@@ -88,7 +91,8 @@ export class Bullet extends Unit {
     }
 }
 
-export class Player extends Unit {
+// export class Player extends Unit {
+class Player extends Unit {
     moveLeft() {
         this.vel = new Vec(-6, this.vel.y);
     }
@@ -123,7 +127,8 @@ export class Player extends Unit {
     }
 }
 
-export class Enemy extends Unit {
+// export class Enemy extends Unit {
+class Enemy extends Unit {
     constructor(pos, vel, width = 0, height = 0, sprite = null) {
         super(pos, vel, width, height, sprite);
         this.shooting = false;

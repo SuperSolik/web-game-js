@@ -1,5 +1,7 @@
 import {GameManager} from "./src/gameManager";
 
+let game;
+
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -7,23 +9,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateScore(score) {
         scoreElement.innerText = score;
-
         if (!localStorage.hasOwnProperty('scoreTable')) {
             localStorage.setItem('scoreTable', '{}');
         }
 
         const table = JSON.parse(localStorage.getItem('scoreTable'));
-
         table[localStorage.username] = score;
-
         localStorage.setItem('scoreTable', JSON.stringify(table));
     }
-
-    function onLogin() {
-        let username = prompt("Input username");
-        localStorage.username = username;
-
-        const game = new GameManager({
+    
+    function restart() {
+        
+    }
+        
+    function start() {
+        game = new GameManager({
             ctx: ctx,
             canvas: canvas,
             callbacks: {
@@ -31,8 +31,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 gameOver: gameOver
             }
         });
-
         game.run();
+    }
+    
+    function onLogin() {
+        let username = prompt("Input username");
+        localStorage.username = username;
+
+        start();
     }
 
     function gameOver(score, end = false) {

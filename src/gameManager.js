@@ -9,7 +9,7 @@ export class GameManager {
         this.actors = [];
         this.player = null;
 
-        this.controls = new EventsManager(opts.canvas.getBoundingClientRect());
+        this.controls = new EventsManager(opts.canvas);
         this.render = new SpritesManager(opts.ctx);
         this.map = new MapManager();
         this.physics = new PhysicsManager(this.map);

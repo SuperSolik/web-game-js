@@ -1,12 +1,12 @@
 import {Vec} from "./entities";
 
 export class EventsManager {
-    constructor(rect) {
-        this.rect = rect;
+    constructor(canvas) {
+        this.rect = canvas.getBoundingClientRect();
 
         document.addEventListener("keydown", (e) => this.onKeyDown(e));
         document.addEventListener("keyup", (e) => this.onKeyUp(e));
-        document.addEventListener("mousedown", (e) => this.getMousePos(e));
+        canvas.addEventListener("mousedown", (e) => this.getMousePos(e));
 
         this.action = {
             left: false,

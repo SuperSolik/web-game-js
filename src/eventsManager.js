@@ -1,7 +1,6 @@
-// import {Vec} from "./entities";
+import {Vec} from "./entities";
 
-// export class EventsManager{
-class EventsManager {
+export class EventsManager {
     constructor(rect) {
         this.rect = rect;
 

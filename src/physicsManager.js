@@ -1,7 +1,6 @@
-// import {Bullet, Enemy, Vec} from "./entities";
+import {Bullet, Enemy, Vec} from "./entities";
 
-// export class PhysicsManager {
-class PhysicsManager {
+export class PhysicsManager {
     constructor(map) {
         this.map = map;
     }

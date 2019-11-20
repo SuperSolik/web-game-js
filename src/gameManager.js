@@ -1,13 +1,10 @@
-// import {Enemy, Player, Vec} from "./entities";
-// import {EventsManager} from "./eventsManager";
-//
-// const {eventsManager} = require("./eventsManager");
-// const {SpritesManager} = require("./spritesManager");
-// const {PhysicsManager} = require("./physicsManager");
-// const {MapManager} = require("./mapManager");
+import {Enemy} from "./entities";
+import {EventsManager} from "./eventsManager";
+import {SpritesManager} from "./spritesManager";
+import {PhysicsManager} from "./physicsManager";
+import {MapManager} from "./mapManager";
 
-// export class GameManager {
-class GameManager {
+export class GameManager {
     constructor(opts) {
         this.actors = [];
         this.player = null;

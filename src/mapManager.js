@@ -1,7 +1,6 @@
-// import {Player, Enemy, Vec} from "./entities";
+import {Enemy, Player, Vec} from "./entities";
 
-// export class MapManager {
-class MapManager {
+export class MapManager {
     constructor(){
         this.mapData = null;
         this.xCount = 0;

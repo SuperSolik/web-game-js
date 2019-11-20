@@ -1,5 +1,4 @@
-// export class Vec {
-class Vec {
+export class Vec {
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -18,8 +17,7 @@ class Vec {
     }
 }
 
-// export class Unit {
-class Unit {
+export class Unit {
     constructor(pos, vel, width = 0, height = 0, sprite = null) {
         this.pos = pos;
         this.vel = vel;
@@ -52,8 +50,7 @@ class Unit {
     }
 }
 
-// export class Bullet extends Unit {
-class Bullet extends Unit {
+export class Bullet extends Unit {
     static get SIZE() {
         return 20;
     }
@@ -91,8 +88,7 @@ class Bullet extends Unit {
     }
 }
 
-// export class Player extends Unit {
-class Player extends Unit {
+export class Player extends Unit {
     moveLeft() {
         this.vel = new Vec(-6, this.vel.y);
     }
@@ -127,8 +123,7 @@ class Player extends Unit {
     }
 }
 
-// export class Enemy extends Unit {
-class Enemy extends Unit {
+export class Enemy extends Unit {
     constructor(pos, vel, width = 0, height = 0, sprite = null) {
         super(pos, vel, width, height, sprite);
         this.shooting = false;

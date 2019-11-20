@@ -1,7 +1,6 @@
-// import {Bullet} from "./entities";
+import {Bullet} from "./entities";
 
-// export class SpritesManager {
-class SpritesManager {
+export class SpritesManager {
     constructor(ctx) {
         this.ctx = ctx;
         this.sprites = null;

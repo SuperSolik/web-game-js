@@ -1,4 +1,4 @@
-class soundManager {
+export class soundManager {
     constructor() {
         this.clips = {};//звуковые эффекты
         this.context = null;//аудиоконтекст

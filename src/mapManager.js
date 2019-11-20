@@ -18,11 +18,12 @@ export class MapManager {
         this.topLayer = null;
         this.middleLayer = null;
         this.bottomLayer = null;
-        this.objects = [];
+
+        this.levelNum = 0;
     }
 
     loadLevel(objects) {
-        fetch(`data/level1.json`)
+        fetch(`data/level${this.levelNum+1}.json`)
             .then(res => res.json())
             .then(res => {
                 this.parseMap(res);
@@ -30,7 +31,8 @@ export class MapManager {
             })
             .then(res => {
                 this.parseObjects(res, objects);
-            })
+            });
+        this.levelNum++;
     }
 
     parseMap(mapData) {
@@ -53,7 +55,7 @@ export class MapManager {
                     this.imgLoaded = true;
                 }
             };
-            img.src = "web-game-joust/" + this.mapData.tilesets[i].image;
+            img.src = "web-game-js/" + this.mapData.tilesets[i].image;
             let t = this.mapData.tilesets[i];
             let ts = {
                 firstgid: t.firstgid, image: img, name: t.name, xCount: Math.floor(t.imagewidth / this.tSize.x),
@@ -74,6 +76,14 @@ export class MapManager {
         let tileId = this.middleLayer.data[idx];
         const wallId = [34, 257, 258, 199, 101, 37, 597, 291, 292, 259, 260, 483, 484];
         return wallId.find(id => id === tileId);
+    }
+
+    isExit(x, y){
+        let wX = Math.floor(x / 2);
+        let wY = Math.floor(y / 2);
+        let idx = Math.floor(wY / this.tSize.y) * this.xCount + Math.floor(wX / this.tSize.x);
+        let tileId = this.middleLayer.data[idx];
+        return tileId === 483 || tileId === 484;
     }
 
     getTile(tileIndex) {

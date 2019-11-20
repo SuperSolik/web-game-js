@@ -1,8 +1,9 @@
-import {Bullet, Enemy, Vec} from "./entities";
+import {Bullet, Enemy, Player, Vec} from "./entities";
 
 export class PhysicsManager {
     constructor(map) {
         this.map = map;
+        this.isTouchExit = false;
     }
 
     handleBullet(b, actors) {
@@ -55,6 +56,10 @@ export class PhysicsManager {
         obj.savePos();
         obj.update();
 
+        if(obj instanceof Player){
+            this.isTouchExit = this.touchExit(obj);
+        }
+
         const scale = !(obj instanceof Bullet) ? 1.5 : 3;
         if (this.map.isWall(obj.pos.x, obj.pos.y + obj.height / scale)
             || this.map.isWall(obj.pos.x + obj.width, obj.pos.y + obj.height / scale)
@@ -64,6 +69,16 @@ export class PhysicsManager {
             obj.destroy = kill;
         }
     }
+
+    touchExit(obj){
+        const scale = !(obj instanceof Bullet) ? 1.5 : 3;
+        return this.map.isExit(obj.pos.x, obj.pos.y + obj.height / scale)
+        || this.map.isExit(obj.pos.x + obj.width, obj.pos.y + obj.height / scale)
+        || this.map.isExit(obj.pos.x, obj.pos.y + obj.height)
+        || this.map.isExit(obj.pos.x + obj.width, obj.pos.y + obj.height);
+    }
+
+
 
     collide(obj1, obj2) {
         return obj1.pos.x <= obj2.pos.x + obj2.width &&

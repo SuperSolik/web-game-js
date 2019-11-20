@@ -16,10 +16,20 @@ export class GameManager {
         this.callbacks = opts.callbacks;
         this.gameLoop = null;
         this.score = 0;
+        this.enemiesCount = 0;
     }
 
     update(){
-        //TODO: combine all entities to actors
+        if(this.physics.isTouchExit && this.enemiesCount <= 0){
+            if(this.map.levelNum >= 2){
+                this.callbacks.gameOver(this.score, true);
+                clearInterval(this.gameLoop);
+                return;
+            }
+            clearInterval(this.gameLoop);
+            this.run();
+        }
+
         this.render.clear();
         if (this.controls.action.left) {
             this.player.moveLeft();
@@ -55,7 +65,6 @@ export class GameManager {
 
         if (this.player.destroy) {
             this.player = null;
-            console.log("GAME OVER");
             clearInterval(this.gameLoop);
             this.callbacks.gameOver(this.score);
             return;
@@ -65,6 +74,7 @@ export class GameManager {
             if (this.actors[index].destroy) {
                 if (this.actors[index] instanceof Enemy) {
                     this.score += 10;
+                    this.enemiesCount--;
                     this.callbacks.updateScore(this.score);
                 }
                 this.actors.splice(index, 1);
@@ -77,10 +87,13 @@ export class GameManager {
     };
 
     run(){
+        this.player = null;
+        this.actors = [];
         this.map.loadLevel(this.actors);
         this.render.init().then(() => {
             this.player = this.actors[0];
+            this.enemiesCount = this.actors.filter(o => o instanceof Enemy).length;
             this.gameLoop = setInterval(() => this.update(), 35);
-        })
+        });
     }
 }

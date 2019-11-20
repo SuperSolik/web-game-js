@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const tableBody = document.querySelector('#score-table tbody');
+        tableBody.innerHTML = "";
         const scoreTableData = JSON.parse(localStorage.getItem('scoreTable'));
 
 

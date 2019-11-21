@@ -6,6 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     const scoreElement = document.getElementById("score");
+    const loginBtn  = document.querySelector(".header button");
+    const screen = document.querySelector(".gameover");
+    const restartBtn = document.querySelector(".gameover button");
+
+    const sounds = {};
+
+    document.querySelectorAll('audio').forEach(audio => {
+       sounds[audio.id] = audio;
+    });
+
+    console.log(sounds);
 
     function updateScore(score) {
         scoreElement.innerText = score;
@@ -17,9 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
         table[localStorage.username] = score;
         localStorage.setItem('scoreTable', JSON.stringify(table));
     }
-    
-    function restart() {
-        
+
+    function onRestart() {
+        screen.classList.remove("show");
+        start();
     }
         
     function start() {
@@ -45,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const screen = document.querySelector(".gameover");
         const title = document.querySelector(".gameover h1");
 
         if (end) {
@@ -72,7 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
         screen.classList.add("show");
     }
 
-    document.querySelector(".header button").addEventListener("click", onLogin);
+    loginBtn.addEventListener("click", onLogin);
+    restartBtn.addEventListener("click", onRestart);
+
+
 });
 
 

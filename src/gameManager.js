@@ -3,24 +3,30 @@ import {EventsManager} from "./eventsManager";
 import {SpritesManager} from "./spritesManager";
 import {PhysicsManager} from "./physicsManager";
 import {MapManager} from "./mapManager";
+import {SoundManager} from "./soundManager";
 
 export class GameManager {
 	constructor(opts) {
+		this.controls = new EventsManager(opts.canvas);
+		this.render = new SpritesManager(opts.ctx);
+		this.sound = new SoundManager();
+
+		this.map = new MapManager();
+		this.physics = new PhysicsManager(this.map);
+
 		this.actors = [];
 		this.player = null;
 
-		this.controls = new EventsManager(opts.canvas);
-		this.render = new SpritesManager(opts.ctx);
-		this.map = new MapManager();
-		this.physics = new PhysicsManager(this.map);
 		this.callbacks = opts.callbacks;
 		this.gameLoop = null;
 		this.score = 0;
 		this.enemiesCount = 0;
+
 	}
 
 	update() {
 		if (this.physics.isTouchExit && this.enemiesCount <= 0) {
+			this.sound.play("win");
 			if (this.map.levelNum >= 2) {
 				this.callbacks.gameOver(this.score, true);
 				clearInterval(this.gameLoop);
@@ -48,6 +54,7 @@ export class GameManager {
 		}
 
 		if (this.controls.action.shoot) {
+			this.sound.play("shot");
 			this.player.shoot(this.actors, this.controls.mouseCoords);
 			this.controls.action.shoot = false;
 		}
@@ -64,6 +71,7 @@ export class GameManager {
 		this.physics.update(this.actors);
 
 		if (this.player.destroy) {
+			this.sound.play("fail");
 			this.player = null;
 			clearInterval(this.gameLoop);
 			this.callbacks.gameOver(this.score);

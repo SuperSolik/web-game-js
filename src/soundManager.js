@@ -1,10 +1,11 @@
 export class SoundManager {
-	constructor() {}
+	constructor() {
+	}
 
-	play(name){
+	play(name) {
 		let audio = document.createElement("audio");
 		audio.src = `sounds/${name}.wav`;
-		audio.volume = 0.5;
+		audio.volume = 0.4;
 		audio.addEventListener("ended", function () {
 			document.removeChild(this);
 		});

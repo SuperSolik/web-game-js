@@ -64,7 +64,7 @@ export class GameManager {
 				e.shoot(this.actors, this.player.pos);
 				setTimeout(() => {
 					e.shooting = true;
-				}, Math.random() * 2500);
+				}, 1500);
 			}
 		});
 

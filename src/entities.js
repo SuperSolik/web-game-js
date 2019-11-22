@@ -61,11 +61,10 @@ export class Bullet extends Unit {
 		return 20;
 	}
 
-	static createBullet(startPos, endPos, sprite = 'red', isPlayer = false) {
-		const angle = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
+	static createBullet(startPos, angle, sprite = 'red', isPlayer = false) {
 		const speed = 10;
 		const b = new Bullet(
-			new Vec(startPos.x + 10 * Math.cos(angle), startPos.y + 10 * Math.sin(angle)),
+			new Vec(startPos.x + Bullet.SIZE/2 * Math.cos(angle), startPos.y + Bullet.SIZE/2 * Math.sin(angle)),
 			new Vec(speed * Math.cos(angle), speed * Math.sin(angle)),
 			Bullet.SIZE,
 			Bullet.SIZE,
@@ -113,10 +112,15 @@ export class Player extends Unit {
 		this.vel = new Vec(this.vel.x, 0);
 	}
 
-	shoot(bullets, endPos) {
+	shoot(bullets, destObjPos) {
+		let startPos = this.pos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2));
+		let endPos = destObjPos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2));
+
+		const angle = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
+
 		const b = Bullet.createBullet(
-			this.pos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2)),
-			endPos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2).multiply(-1)),
+			startPos,
+			angle,
 			'yellow',
 			true);
 		bullets.push(b);
@@ -127,17 +131,30 @@ export class Enemy extends Unit {
 	constructor(pos, vel, width = 0, height = 0, sprite = null) {
 		super(pos, vel, width, height, sprite);
 		this.shooting = false;
+		this.hasShotgun = false;
 		setTimeout(() => {
 			this.shooting = true;
-		}, 1500);
+		}, Math.random()*1000 + 500);
 	}
 
-	shoot(bullets, endPos) {
+	shoot(bullets, destObjPos) {
 		if (this.shooting) {
-			const b = Bullet.createBullet(
-				this.pos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2)),
-				endPos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2)),);
-			bullets.push(b);
+			const shotsNum = this.hasShotgun ? 3 : 1;
+
+			let startPos = this.pos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2));
+			let endPos = destObjPos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2));
+
+			const angle = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
+
+			const startAngle = angle - Math.floor(shotsNum/2)*Math.PI/5;
+			const endAngle = angle + Math.floor(shotsNum/2)*Math.PI/5;
+
+			for(let angle = startAngle; angle <= endAngle; angle += Math.PI/5){
+				bullets.push(Bullet.createBullet(
+					startPos,
+					angle
+				));
+			}
 			this.shooting = false;
 		}
 	}

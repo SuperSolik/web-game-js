@@ -88,7 +88,6 @@ export class SpritesManager {
 			}, 125);
 		}
 	}
-
 	draw(obj) {
 		if (obj instanceof Array) {
 			obj.forEach(o => this.draw(o));

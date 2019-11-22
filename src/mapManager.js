@@ -55,7 +55,7 @@ export class MapManager {
 					this.imgLoaded = true;
 				}
 			};
-			img.src = "web-game-js/" + this.mapData.tilesets[i].image;
+			img.src = this.mapData.tilesets[i].image;
 			let t = this.mapData.tilesets[i];
 			let ts = {
 				firstgid: t.firstgid, image: img, name: t.name, xCount: Math.floor(t.imagewidth / this.tSize.x),
@@ -123,12 +123,14 @@ export class MapManager {
 			if (object.type === "enemy") {
 				let isShotgunProp = object.properties.find(p => p.name === "shotgun");
 				let spriteProp = object.properties.find(p => p.name === "sprite");
-				objects.push(new Enemy(
+				const e = new Enemy(
 					new Vec(object.x * 2, object.y * 2),
 					new Vec(0, 0),
 					32, 64,
 					spriteProp.value
-				));
+				);
+				e.hasShotgun = isShotgunProp.value;
+				objects.push(e);
 			}
 		}
 	}

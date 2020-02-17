@@ -22,17 +22,9 @@ export class MapManager {
 		this.levelNum = 0;
 	}
 
-	loadLevel(objects) {
-		fetch(`data/level${this.levelNum + 1}.json`)
-		.then(res => res.json())
-		.then(res => {
-			this.parseMap(res);
-			return res;
-		})
-		.then(res => {
-			this.parseObjects(res, objects);
-		});
-		this.levelNum++;
+	async loadLevel() {
+		let res = await fetch(`data/level${++this.levelNum}.json`);
+		return await res.json();
 	}
 
 	parseMap(mapData) {

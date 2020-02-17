@@ -97,7 +97,12 @@ export class GameManager {
 	run() {
 		this.player = null;
 		this.actors = [];
-		this.map.loadLevel(this.actors);
+
+		this.map.loadLevel().then(level => {
+			this.map.parseMap(level);
+			this.map.parseObjects(level, this.actors);
+		});
+
 		this.render.init().then(() => {
 			this.player = this.actors[0];
 			this.enemiesCount = this.actors.filter(o => o instanceof Enemy).length;

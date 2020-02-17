@@ -1,5 +1,3 @@
-import {Bullet} from "./entities";
-
 export class SpritesManager {
 	constructor(ctx) {
 		this.ctx = ctx;
@@ -8,41 +6,37 @@ export class SpritesManager {
 		this.bulletsSprites = {};
 	}
 
-	init() {
+	async init() {
 		this.sprites = new Image();
 
-		return new Promise(resolve => {
-			this.sprites.onload = () => {
-				resolve("ok");
-			};
+		await new Promise(resolve => {
+			this.sprites.onload = () => resolve("ok");
 			this.sprites.src = "sprites/set.png";
-		})
-		.then(res => {
-			return new Promise(resolve => {
-				let spriteCount = 0;
-				for (let color of ['red', 'yellow']) {
-					const bulletSprite = new Image();
-					bulletSprite.onload = () => {
-						this.bulletsSprites[color] = bulletSprite;
-						spriteCount++;
-						if (spriteCount === 2) {
-							resolve("ok");
-						}
-					};
-					bulletSprite.src = `sprites/proj_${color}.png`;
-				}
-			});
-		})
-		.then(res => {
-			return new Promise(resolve => {
-				let res = fetch("data/entities.json")
-				.then(res => res.json())
-				.then(res => {
-					this.spritesInfo = res;
-					resolve("ok");
-				})
-				.catch(err => err);
-			});
+		});
+
+		await new Promise(resolve => {
+			let spriteCount = 0;
+			for (let color of ['red', 'yellow']) {
+				const bulletSprite = new Image();
+				bulletSprite.onload = () => {
+					this.bulletsSprites[color] = bulletSprite;
+					spriteCount++;
+					if (spriteCount === 2) {
+						resolve("ok");
+					}
+				};
+				bulletSprite.src = `sprites/proj_${color}.png`;
+			}
+		});
+
+		await new Promise(resolve => {
+			let res = fetch("data/entities.json")
+			.then(res => res.json())
+			.then(res => {
+				this.spritesInfo = res;
+				resolve("ok");
+			})
+			.catch(err => err);
 		});
 	}
 

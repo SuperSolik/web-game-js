@@ -1,5 +1,8 @@
 *{
-
+    font-family: 'Roboto', Arial, sans-serif;
+    box-sizing: border-box;
+    border-radius: 10px;
+    background: black;
 }
 
 .center-element{
@@ -7,4 +10,53 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+
+.fancy-button {
+    color: black;
+    background: white;
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 24px;
+    cursor: pointer;
+    border: none;
+}
+
+.fancy-button:hover {
+    cursor: pointer;
+    background: white;
+    opacity: 0.9;
+}
+
+.gameover {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    display: none;
+    background: black;
+    height: 70px;
+    width: 150px;
+
+    border: 5px solid white;
+    color: white;
+
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.gameover button{
+    height: 80%;
+    width: 80%;
+    margin: auto;
+    /*margin-bottom: 10px;*/
+}
+
+.show {
+    display: flex;
 }

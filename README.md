@@ -1,6 +1,6 @@
 # web-game-js  
-### Overview:  
-JS shoot'em up game made for LETI web programming course.    
+JS shoot'em up game made for LETI web programming course.  
+![game](https://user-images.githubusercontent.com/31539612/74675270-3e5ddc80-51c4-11ea-8dce-8b1884649ee2.gif)    
 * move on WASD
 * shoot on left mouse click  
 * no hp, 1 hit for kill, whether it's a player or enemy

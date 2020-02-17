@@ -2,81 +2,7 @@
     font-family: 'Roboto', Arial, sans-serif;
     box-sizing: border-box;
     border-radius: 10px;
-}
-
-:root {
-    --main-color: #6CA2EA;
-    --support-color: #B5D33D;
-}
-
-.header {
-    display: flex;
-    height: 60px;
-    padding: 10px;
-    margin-bottom: 15px;
-    align-items: center;
     background: black;
-}
-
-.header h1 {
-    color: white;
-    text-align: center;
-    margin: auto;
-    transform: translate(50%);
-}
-
-
-.container {
-    height: 90vh;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.hint {
-    background: black;
-    height: 100%;
-    width: 100%;
-
-    font-size: 25px;
-    font-weight: bold;
-    color: white;
-    font-family: monospace;
-    text-align: left;
-
-    margin-right: 10px;
-}
-
-
-.hint h2 {
-    text-align: center;
-}
-
-.game {
-    background: black;
-    height: 100%;
-    flex-direction: column;
-}
-
-.stats {
-    color: white;
-    background: black;
-    height: 100%;
-    width: 100%;
-    margin-left: 10px;
-
-    font-size: 25px;
-    font-weight: bold;
-    font-family: monospace;
-    text-align: left;
-}
-
-.stats h2 {
-    text-align: center;
-}
-
-.stats p {
-    margin-left: 10%;
 }
 
 .center-element{
@@ -111,34 +37,26 @@
 
     display: none;
     background: black;
-    height: fit-content;
-    width: 500px;
+    height: 70px;
+    width: 150px;
 
     border: 5px solid white;
-
     color: white;
+
     align-items: center;
+    justify-content: center;
     font-family: monospace;
     text-align: center;
     margin-right: 10px;
 }
 
-.gameover table {
-    text-align: left;
-    width: 100%;
-    margin: auto;
-    padding: 10px;
-}
-
 .gameover button{
-    height: 50px;
-    width: 50%;
-    margin-bottom: 10px;
+    height: 80%;
+    width: 80%;
+    margin: auto;
+    /*margin-bottom: 10px;*/
 }
 
 .show {
-    display: block;
+    display: flex;
 }
-/*.scale {*/
-/*    transform: scale(3.0);*/
-/*}*/

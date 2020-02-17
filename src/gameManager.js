@@ -1,106 +1,107 @@
-import {Enemy, Player, Vec} from "./entities";
-
-const {eventsManager} = require("./eventsManager");
-const {SpritesManager} = require("./spritesManager");
-const {PhysicsManager} = require("./physicsManager");
-const {MapManager} = require("./mapManager");
+import {Enemy} from "./entities";
+import {EventsManager} from "./eventsManager";
+import {SpritesManager} from "./spritesManager";
+import {PhysicsManager} from "./physicsManager";
+import {MapManager} from "./mapManager";
+import {SoundManager} from "./soundManager";
 
 export class GameManager {
-    constructor(opts) {
-        this.player = new Player(
-            new Vec(opts.canvas.width / 2, opts.canvas.height / 2),
-            new Vec(0, 0),
-            32,
-            64,
-            "knight_f_run_anim");
+	constructor(opts) {
+		this.controls = new EventsManager(opts.canvas);
+		this.render = new SpritesManager(opts.ctx);
+		this.sound = new SoundManager();
 
-        this.player.fill = "green";
+		this.map = new MapManager();
+		this.physics = new PhysicsManager(this.map);
 
-        this.enemies = [];
-        this.bullets = [];
+		this.actors = [];
+		this.player = null;
 
-        this.controls = eventsManager;
-        this.render = new SpritesManager(opts.ctx);
-        this.map = new MapManager();
-        this.physics = new PhysicsManager(this.map);
-        this.callbacks = opts.callbacks;
-        this.gameLoop = null;
-    }
+		this.callbacks = opts.callbacks;
+		this.gameLoop = null;
+		this.score = 0;
+		this.enemiesCount = 0;
 
-    update(){
-        //TODO: combine all entities to actors
-        this.render.clear();
-        if (this.controls.action.left) {
-            this.player.moveLeft();
-        } else if (this.controls.action.right) {
-            this.player.moveRight();
-        } else {
-            this.player.stopX();
-        }
+	}
 
-        if (this.controls.action.up) {
-            this.player.moveUp();
-        } else if (this.controls.action.down) {
-            this.player.moveDown();
-        } else {
-            this.player.stopY();
-        }
+	update() {
+		if (this.physics.isTouchExit && this.enemiesCount <= 0) {
+			this.sound.play("win");
+			if (this.map.levelNum >= 2) {
+				this.callbacks.gameOver(this.score, true);
+				clearInterval(this.gameLoop);
+				return;
+			}
+			clearInterval(this.gameLoop);
+			this.run();
+		}
 
-        if (this.controls.action.shoot) {
-            this.player.shoot(this.bullets, eventsManager.mouseCoords);
-            this.controls.action.shoot = false;
-        }
+		this.render.clear();
+		if (this.controls.action.left) {
+			this.player.moveLeft();
+		} else if (this.controls.action.right) {
+			this.player.moveRight();
+		} else {
+			this.player.stopX();
+		}
 
-        this.enemies.forEach(e => {
-            if (e.shooting) {
-                e.shoot(this.bullets, this.player.pos);
-                setTimeout(() => {
-                    e.shooting = true;
-                }, Math.random() * 2500);
-            }
-        });
+		if (this.controls.action.up) {
+			this.player.moveUp();
+		} else if (this.controls.action.down) {
+			this.player.moveDown();
+		} else {
+			this.player.stopY();
+		}
 
-        this.physics.update(this.player, this.enemies, this.bullets);
-        if (this.player.destroy) {
-            this.player = null;
-            console.log("GAME OVER");
-            clearInterval(this.gameLoop);
-            return;
-        }
+		if (this.controls.action.shoot) {
+			this.sound.play("shot");
+			this.player.shoot(this.actors, this.controls.mouseCoords);
+			this.controls.action.shoot = false;
+		}
 
-        for (let index in this.enemies) {
-            if (this.enemies[index].destroy) {
-                this.enemies.splice(index, 1);
-            }
-        }
+		this.actors.forEach(e => {
+			if (e.shooting) {
+				e.shoot(this.actors, this.player.pos);
+				setTimeout(() => {
+					e.shooting = true;
+				}, 1500);
+			}
+		});
 
-        for (let index in this.bullets) {
-            if (this.bullets[index].destroy) {
-                this.bullets.splice(index, 1);
-            }
-        }
+		this.physics.update(this.actors);
 
-        this.render.drawMapBottom(this.map);
-        this.render.draw(this.player);
-        this.render.draw(this.enemies);
-        this.render.draw(this.bullets);
-        this.render.drawMapTop(this.map);
-    };
+		if (this.player.destroy) {
+			this.sound.play("fail");
+			this.player = null;
+			clearInterval(this.gameLoop);
+			this.callbacks.gameOver(this.score);
+			return;
+		}
 
-    run(){
-        for (let x = this.map.width / 4; x <= 3 * this.map.width / 4; x += this.map.width / 4) {
-            const e = new Enemy(
-                new Vec(x, this.map.height / 5),
-                new Vec(0, 0),
-                32,
-                64,
-                "chort_run_anim"
-            );
-            this.enemies.push(e);
-        }
-        this.map.loadLevel();
-        this.render.init().then(() => {
-            this.gameLoop = setInterval(() => this.update(), 35);
-        })
-    }
+		for (let index in this.actors) {
+			if (this.actors[index].destroy) {
+				if (this.actors[index] instanceof Enemy) {
+					this.score += 10;
+					this.enemiesCount--;
+					this.callbacks.updateScore(this.score);
+				}
+				this.actors.splice(index, 1);
+			}
+		}
+
+		this.render.drawMapBottom(this.map);
+		this.render.draw(this.actors);
+		this.render.drawMapTop(this.map);
+	};
+
+	run() {
+		this.player = null;
+		this.actors = [];
+		this.map.loadLevel(this.actors);
+		this.render.init().then(() => {
+			this.player = this.actors[0];
+			this.enemiesCount = this.actors.filter(o => o instanceof Enemy).length;
+			this.gameLoop = setInterval(() => this.update(), 35);
+		});
+	}
 }

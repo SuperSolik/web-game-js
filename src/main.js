@@ -79,8 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	loginBtn.addEventListener("click", onLogin);
 	restartBtn.addEventListener("click", onRestart);
-
-
 });
 
 

@@ -17,24 +17,18 @@ export class Vec {
 	}
 }
 
+//base unit class
 export class Unit {
 	constructor(pos, vel, width = 0, height = 0, sprite = null) {
-		this.pos = pos;
+		this.pos = pos; // {x, y}
 		this.vel = vel;
 		this.width = width;
 		this.height = height;
-		this.sprite = sprite;
+		this.sprite = sprite; // sprite_name
 		this.destroy = false;
 		this.curFrame = 0;
 		this.changeSprite = true;
 		this.oldPos = null;
-	}
-
-	changeSpriteFrame(frameLen) {
-		if (this.changeSprite) {
-			this.curFrame = (this.curFrame + 1) % frameLen;
-			this.changeSprite = false;
-		}
 	}
 
 	savePos() {
@@ -48,6 +42,30 @@ export class Unit {
 	update() {
 		this.pos = this.pos.plus(this.vel);
 	}
+
+	draw(graphics){
+		let spriteInfo = graphics.gameSpriteInfo[this.sprite];
+
+		graphics.ctx.drawImage(graphics.gameSprites,
+			spriteInfo.x + this.curFrame * 16, spriteInfo.y,
+			spriteInfo.w, spriteInfo.h,
+			this.pos.x, this.pos.y,
+			this.width, this.height,
+		);
+
+		this.changeSpriteFrame(spriteInfo);
+	}
+
+	changeSpriteFrame(spriteInfo) {
+		if (this.changeSprite) {
+			this.curFrame = (this.curFrame + 1) % (spriteInfo.animLen || 3); // 3 for bullets, no info for them
+			this.changeSprite = false;
+			setTimeout(() => {
+				this.changeSprite = true;
+			}, 125);
+		}
+	}
+
 }
 
 export class Bullet extends Unit {
@@ -61,8 +79,10 @@ export class Bullet extends Unit {
 		return 20;
 	}
 
+	//fabric method based on bullet position and its direction = angle
 	static createBullet(startPos, angle, sprite = 'red', isPlayer = false) {
 		const speed = 10;
+
 		const b = new Bullet(
 			new Vec(startPos.x + Bullet.SIZE/2 * Math.cos(angle), startPos.y + Bullet.SIZE/2 * Math.sin(angle)),
 			new Vec(speed * Math.cos(angle), speed * Math.sin(angle)),
@@ -84,6 +104,28 @@ export class Bullet extends Unit {
 				this.destroy = true;
 			}
 		}
+	}
+
+	//for graphics see spriteManages.js:
+	draw(graphics) {
+		let sprite = graphics.bulletsSprites[this.sprite];
+
+		graphics.ctx.save();
+
+		let scale = 2;
+		graphics.ctx.translate(this.pos.x + this.width / 2, this.pos.y + this.height / 2);
+		graphics.ctx.rotate(this.angle);
+
+		graphics.ctx.drawImage(sprite,
+			this.curFrame * 16, 0,
+			16, 16,
+			-(this.width * scale) / 2, -(this.height * scale) / 2,
+			(this.width * scale), (this.height * scale),
+		);
+
+		graphics.ctx.restore();
+
+		this.changeSpriteFrame(sprite);
 	}
 }
 
@@ -114,7 +156,7 @@ export class Player extends Unit {
 
 	shoot(bullets, destObjPos) {
 		let startPos = this.pos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2));
-		let endPos = destObjPos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2));
+		let endPos = destObjPos.plus(new Vec(Bullet.SIZE / 2, Bullet.SIZE / 2).multiply(-1));
 
 		const angle = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
 
@@ -142,7 +184,7 @@ export class Enemy extends Unit {
 			const shotsNum = this.hasShotgun ? 3 : 1;
 
 			let startPos = this.pos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2));
-			let endPos = destObjPos.plus(new Vec(this.width / 2 - Bullet.SIZE / 2, this.height / 2 - Bullet.SIZE / 2));
+			let endPos = destObjPos.plus(new Vec(Bullet.SIZE / 2, Bullet.SIZE / 2).multiply(-1));
 
 			const angle = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
 

@@ -51,52 +51,16 @@ export class SpritesManager {
 		this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 	}
 
-	drawBullet(b) {
-		let image = this.bulletsSprites[b.sprite];
-		this.ctx.save();
-		let scale = 2;
-		this.ctx.translate(b.pos.x + b.width / 2, b.pos.y + b.height / 2);
-		this.ctx.rotate(b.angle);
-		this.ctx.drawImage(image,
-			b.curFrame * 16, 0,
-			16, 16,
-			-(b.width * scale) / 2, -(b.height * scale) / 2,
-			(b.width * scale), (b.height * scale),
-		);
-		this.ctx.restore();
-		if (b.changeSprite) {
-			b.changeSpriteFrame(3);
-			setTimeout(() => {
-				b.changeSprite = true;
-			}, 125);
-		}
-	}
-
-	drawUnit(unit) {
-		let sprite = this.spritesInfo[unit.sprite];
-		this.ctx.drawImage(this.sprites,
-			sprite.x + unit.curFrame * 16, sprite.y,
-			sprite.w, sprite.h,
-			unit.pos.x, unit.pos.y,
-			unit.width, unit.height,
-		);
-
-		if (unit.changeSprite) {
-			unit.changeSpriteFrame(sprite.animLen);
-			setTimeout(() => {
-				unit.changeSprite = true;
-			}, 125);
-		}
-	}
 	draw(obj) {
 		if (obj instanceof Array) {
 			obj.forEach(o => this.draw(o));
 		} else {
-			if (obj instanceof Bullet) {
-				this.drawBullet(obj);
-			} else {
-				this.drawUnit(obj);
-			}
+			obj.draw({
+				ctx: this.ctx,
+				bulletsSprites: this.bulletsSprites,
+				gameSprites: this.sprites,
+				gameSpriteInfo: this.spritesInfo
+			});
 		}
 	}
 

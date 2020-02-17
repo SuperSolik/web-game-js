@@ -4,7 +4,7 @@ const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const glob = require("glob");
 
 module.exports = {
-	watch: true,
+	// watch: true,
 	entry: glob.sync("./src/*.js"),
 	output: {
 		path: path.resolve(__dirname, "dist"), //Output Directory

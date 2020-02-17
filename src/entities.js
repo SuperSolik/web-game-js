@@ -43,7 +43,7 @@ export class Unit {
 		this.pos = this.pos.plus(this.vel);
 	}
 
-	draw(graphics){
+	draw(graphics) {
 		let spriteInfo = graphics.gameSpriteInfo[this.sprite];
 
 		graphics.ctx.drawImage(graphics.gameSprites,
@@ -84,7 +84,7 @@ export class Bullet extends Unit {
 		const speed = 10;
 
 		const b = new Bullet(
-			new Vec(startPos.x + Bullet.SIZE/2 * Math.cos(angle), startPos.y + Bullet.SIZE/2 * Math.sin(angle)),
+			new Vec(startPos.x + Bullet.SIZE / 2 * Math.cos(angle), startPos.y + Bullet.SIZE / 2 * Math.sin(angle)),
 			new Vec(speed * Math.cos(angle), speed * Math.sin(angle)),
 			Bullet.SIZE,
 			Bullet.SIZE,
@@ -176,7 +176,7 @@ export class Enemy extends Unit {
 		this.hasShotgun = false;
 		setTimeout(() => {
 			this.shooting = true;
-		}, Math.random()*1000 + 500);
+		}, Math.random() * 1000 + 500);
 	}
 
 	shoot(bullets, destObjPos) {
@@ -188,10 +188,10 @@ export class Enemy extends Unit {
 
 			const angle = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
 
-			const startAngle = angle - Math.floor(shotsNum/2)*Math.PI/5;
-			const endAngle = angle + Math.floor(shotsNum/2)*Math.PI/5;
+			const startAngle = angle - Math.floor(shotsNum / 2) * Math.PI / 5;
+			const endAngle = angle + Math.floor(shotsNum / 2) * Math.PI / 5;
 
-			for(let angle = startAngle; angle <= endAngle; angle += Math.PI/5){
+			for (let angle = startAngle; angle <= endAngle; angle += Math.PI / 5) {
 				bullets.push(Bullet.createBullet(
 					startPos,
 					angle

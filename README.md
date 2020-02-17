@@ -9,6 +9,7 @@ JS shoot'em up game made for LETI web programming course.
 npm, python3 (using its http server in `start` configuration)  
 ### Setup:  
 ```
+npm install
 npm run build
 npm start
 ```  

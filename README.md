@@ -14,4 +14,3 @@ npm run build
 npm start
 ```  
 Game would be available at `localhost:3000`  
-> `master` branch contains raw game without score table and fancy html decoration, `show` branch has all that, but the game itself in worse condition 

@@ -2,21 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="styles.css" rel="stylesheet">
-    <script src="dist/game.min.js"></script>
+    <link href="style.css" rel="stylesheet">
     <title>Game</title>
-
 </head>
 <body>
-<div class="center-element">
-    <div class="game">
-        <canvas height="768" id="canvas" width="960"></canvas>
+    <div class="game center">
+        <canvas id="canvas" width="960" height="768px"></canvas>
     </div>
-</div>
 
-<div class="gameover">
-    <button class="fancy-button">Restart</button>
-</div>
+    <div class="gameover center">
+        <button class="restart-button">Restart</button>
+    </div>
 
+    <script src="dist/game.min.js"></script>
 </body>
 </html>

@@ -4,6 +4,12 @@ let game = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("canvas");
+
+  // canvas.style.width = "100%";
+  canvas.style.height = "100%";
+  // canvas.width = canvas.offsetWidth;
+  // canvas.height = canvas.offsetHeight;
+
   const ctx = canvas.getContext("2d");
 
   const restartBtnScreen = document.querySelector(".gameover");
@@ -25,16 +31,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     game.run();
   }
+  
 
-  function gameOver(score, end = false) {
-    restartBtnScreen.classList.add("show");
-  }
-
-  restartBtn.addEventListener("click", () => {
+  restartBtn.onclick = () => {
     restartBtnScreen.classList.remove("show");
-    game = null;
     start();
-  });
+  }
 
   start();
 });

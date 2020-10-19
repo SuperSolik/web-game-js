@@ -3,22 +3,22 @@
   "version": "1.0.1",
   "scripts": {
     "start": "serve",
-    "build": "webpack --mode production"
+    "build": "webpack --mode=production"
+  },
+  "author": "SuperSolik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SuperSolik/web-game-js/issues"
+  },
+  "homepage": "https://github.com/SuperSolik/web-game-js#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.1.0",
+    "babel-preset-env": "^1.7.0",
+    "webpack": "^5.1.3",
+    "webpack-cli": "^4.1.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.8.4",
-    "glob": "latest",
-    "serialize-javascript": "^3.1.0",
-    "serve": "^11.3.2",
-    "uglifyjs-webpack-plugin": "^2.2.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "@babel/plugin-proposal-class-properties": "^7.7.0",
-    "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.7.1",
-    "babel-loader": "^8.0.6",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "serve": "^11.3.2"
   }
 }

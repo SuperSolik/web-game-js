@@ -4,12 +4,6 @@ let game = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("canvas");
-
-  // canvas.style.width = "100%";
-  canvas.style.height = "100%";
-  // canvas.width = canvas.offsetWidth;
-  // canvas.height = canvas.offsetHeight;
-
   const ctx = canvas.getContext("2d");
 
   const restartBtnScreen = document.querySelector(".gameover");

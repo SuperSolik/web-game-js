@@ -1,0 +1,41 @@
+* {
+  font-family: "Roboto", Arial, sans-serif;
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.gameover {
+  display: none;
+  place-items: center;
+  border-radius: 20px;
+  width: 10%;
+  height: 5%;
+}
+
+.restart-button {
+  background-color: white;
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  display: inline-block;
+  border-radius: 20px;
+  font-size: 20px;
+  outline: none;
+  cursor: pointer;
+}
+
+.restart-button:hover {
+  cursor: pointer;
+  background-color: lightgray;
+  opacity: 0.9;
+}
+
+.show {
+  display: grid;
+  place-items: center;
+}

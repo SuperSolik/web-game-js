@@ -1,33 +1,28 @@
-const webpack = require("webpack");
-const path = require("path");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-const glob = require("glob");
+const path = require('path');
 
 module.exports = {
-  // watch: true,
-  entry: glob.sync("./src/*.js"),
+  entry: [
+    './src/index.js',
+  ],
   output: {
-    path: path.resolve(__dirname, "dist"), //Output Directory
-    filename: "game.min.js", //Output file
+    filename: './game.min.js'
   },
   module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"],
-      },
-      {
-        test: /\.js$/, //Regular expression
-        exclude: /(node_modules|bower_components)/,//excluded node_modules
+    rules: [{
+        test: /\.js$/,
+        include: path.resolve(__dirname, 'src/js'),
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
-            plugins: ["@babel/plugin-proposal-class-properties", "@babel/transform-runtime"],
-            presets: ["@babel/preset-env"]  //Preset used for env setup
+            presets: 'env'
           }
         }
-      }
-    ],
+      },
+    ]
   },
-  plugins: [new UglifyJsPlugin()],
+  plugins: [
+  ],
+  optimization: {
+    minimize: true,
+  }
 };

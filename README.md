@@ -6,7 +6,7 @@ JS shoot'em up game made for LETI web programming course.
 * no hp, 1 hit for kill, whether it's a player or enemy
 * 2 levels  
 ### Dependencies:    
-npm, python3 (using its http server in `start` configuration)  
+npm  
 ### Setup:  
 ```
 npm install

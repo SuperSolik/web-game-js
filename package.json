@@ -12,7 +12,7 @@
   },
   "homepage": "https://github.com/SuperSolik/web-game-js#readme",
   "devDependencies": {
-    "babel-core": "^4.7.16",
+    "babel-core": "^6.26.3",
     "babel-loader": "^8.1.0",
     "babel-preset-env": "^1.7.0",
     "webpack": "^5.76.0",
